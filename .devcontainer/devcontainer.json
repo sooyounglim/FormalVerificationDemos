@@ -1,0 +1,42 @@
+{
+  "name": "SF / Rocq 9.0.1 (OCaml 5.2.0)",
+
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".",
+    "args": {
+      "OCAML_VERSION": "5.2.0",
+      "ROCQ_CORE_VERSION": "9.0.1",
+      "ROCQ_STDLIB_VERSION": "9.1.0",
+      "STDPP_VERSION": "1.13.0",
+      "PACO_VERSION": "4.2.3",
+      "VSROCQ_LS_VERSION": "2.4.3+1"
+    }
+  },
+
+  "remoteUser": "opam",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rocq-prover.vsrocq@2.4.3"
+      ],
+      "settings": {
+        "vsrocq.path": "/home/opam/.opam/sf/bin/vsrocqtop",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "files.eol": "\n",
+        "[coq]": {
+          "editor.tabSize": 2,
+          "editor.insertSpaces": true
+        }
+      }
+    }
+  },
+
+  "mounts": [
+    "source=sf-opam-cache,target=/home/opam/.opam/download-cache,type=volume"
+  ],
+
+  "postCreateCommand": "rocq -v && opam list rocq-core rocq-stdlib rocq-stdpp coq-paco vsrocq-language-server"
+}
