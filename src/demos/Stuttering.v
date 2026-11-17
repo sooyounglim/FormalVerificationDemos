@@ -1,3 +1,5 @@
+Print LoadPath.
+
 From refinement.lib Require Import
      Prelude
      TransSystem
@@ -52,7 +54,14 @@ Module Spec.
   : st.(hr) ≤ 12.
   Proof.
     (* TODO *)
-  Admitted.
+    induction RCH using lreachable_snoc_ind.
+    - repeat red in INIT. destruct INIT as [H1 H2]. apply H2.
+    - inversion STEP. rewrite ST'. unfold nextHr. destruct (decide (st.(hr) = 12)).
+      + lia.
+      + destruct IHRCH1 as [ | IH'].
+        * lia.
+        * lia.
+  Qed.
 
 End Spec.
 
@@ -80,14 +89,20 @@ Module Impl.
   : 0 ≤ st.(min).
   Proof.
     (* TODO *)
-  Admitted.
+  lia. Qed.
 
   Lemma inv_min_le_59 lbs (st : St)
     (RCH : lreachable lbs st)
   : st.(min) ≤ 59.
   Proof.
     (* TODO *)
-  Admitted.
+    induction RCH using lreachable_snoc_ind.
+    - repeat red in INIT. destruct INIT as [[H1 H2] M]. apply M.
+    - inversion STEP. unfold nextHrMin in ST'. destruct (decide (min st = 59)).
+      + injection ST' as Hhr Hmin. rewrite Hmin. lia.
+      + injection ST' as Hhr Hmin. rewrite Hmin. lia.
+  Qed.
+        
 
 End Impl.
 
@@ -98,6 +113,9 @@ End Impl.
   LTSLbRel := λ _ _ _ _ _ _ _, True; (* given; ignore *)
   LTSCond := λ _ _ _, True; (* given; ignore *)
 |}.
+
+Print LTSRefineInit.
+Print LTSRefineStep.
 
 Lemma Stutter_lts_refine_init : LTSRefineInit Impl.St Spec.St.
 Proof.
